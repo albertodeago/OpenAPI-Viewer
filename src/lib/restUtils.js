@@ -2,7 +2,7 @@ import store from '@/store';
 import axios from 'axios';
 
 
-function  callEndPoint (method, url, pathParams, queryParams, reqBodyMimeType, requestBody, headerParams, formParams, cookieParams ) {
+function  callEndPoint (method, url, pathParams, queryParams, reqBodyMimeType, requestBody, headerParams, formParams, cookieParams, jsonParam ) {
     let endPoint= url;
     let qParams = {};
     let updatedQParams;
@@ -71,13 +71,16 @@ function  callEndPoint (method, url, pathParams, queryParams, reqBodyMimeType, r
     }
     //TODO: Deal with formParams and cookieParams later
 
+    if (jsonParam) {
+        requestBody = jsonParam;
+    }
 
     endPoint= store.state.selectedApiServer.replace(/^\/|\/$/g, '') +"/" + endPoint.replace(/^\/|\/$/g, '');
     return axios.request({
         'method'  : method,
         'url'     : endPoint,
         'params'  : qParams,    // Query Params
-        'data'    : reqBodyContent, // Body Params
+        'data'    : requestBody, // Body Params
         'headers' : hParams,        // Header Params
         'paramsSerializer': qParams => serealizeQueryString(qParams) 
     });

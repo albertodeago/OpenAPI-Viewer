@@ -177,6 +177,13 @@
         let me = this;
         let res="";
         me.loading=true;
+        let json = undefined;
+        try {
+          const str = this.$el.querySelector("textarea").value
+          json = JSON.parse(str);
+        } catch(e) {
+          // TODO: handle error
+        }
         this.res = callEndPoint(
           this.method, 
           this.url, 
@@ -186,7 +193,8 @@
           this.mimeRequestTypes, 
           this.headerParams, 
           this.formParams, 
-          this.cookieParams
+          this.cookieParams,
+          json
         )
         .then(function(resp){
           me.responseStatusCode = resp.status;
@@ -283,7 +291,7 @@
             "required":v.required?v.required:false,
             "description":v.description?v.description:"",
             "schema":v.schema?v.schema:{"type":"string"},
-            "example":v["x-example"]?v["x-example"]:"",
+            "example": v.name === "clientId" ? store.state.clientId : (v["x-example"]?v["x-example"]:""),
           })
         }
         else{

@@ -84,6 +84,14 @@
             <a v-if="parsedSpec.info.license.url"  :href="parsedSpec.info.license.url"> {{parsedSpec.info.license.url}}</a></div>    
         </div>
 
+        <!-- Login section -->
+        <div style="margin:5px 0 10px 0">
+          <input type="text" class="sw-small" style="width:205px; margin-right:5px" placeholder="clientId" v-model="clientId">
+          <input type="text" class="sw-small" style="width:205px; margin-right:5px" placeholder="username" v-model="username">
+          <input type="password" class="sw-small" style="width:205px; margin-right:5px" placeholder="password" v-model="password">
+          <button @click="login">Login</button>
+        </div>
+
         <!-- Doc Security Section -->
         <security-schemes  v-if="parsedSpec.securitySchemes" 
           :schemes="parsedSpec.securitySchemes"
@@ -114,6 +122,8 @@ import store from '@/store';
 import { Loading } from 'element-ui';
 import marked from 'marked';
 
+import axios from 'axios';
+
 export default {
   data:function(){
     return{
@@ -130,11 +140,43 @@ export default {
       showSettingsPanel:false,
       showLoadJsonPanel:false,
       jsonSpecText:"",
-      prevScrollpos:0
+      prevScrollpos:0,
+
+      clientId: "qaxthron",
+      username: "alberto.deagostini",
+      password: "password"
       
     }
   },
   methods:{
+    login() {
+      const url = `${location.protocol}//${this.clientId}-view.thron.com/api/xsso/resources/accessmanager/login/${this.clientId}`;
+      const body = `username=${encodeURIComponent(this.username)}&password=${encodeURIComponent(this.password)}`;
+      axios.request({
+        'method'  : 'POST',
+        'url'     : url,
+        'data'    : body,
+        'headers' : {'Content-Type': 'application/x-www-form-urlencoded'}
+      }).then((resp) => {
+        const result = resp.data;
+        const scheme = this.parsedSpec.securitySchemes.TokenAuthorization; // we have only this one in THRON
+        store.commit("setClientId", this.clientId);
+        store.commit("reqTokenType", scheme.type.toLowerCase());
+        // store.commit("reqSendTokenIn", scheme.name);
+        store.commit("reqSendTokenIn", "header");
+        store.commit("reqHeader", scheme.name);
+        store.commit("setTokenId", result.tokenId);
+        
+        // now search for clientId input, if some are already opened populate them
+        Array.prototype.slice.apply(document.querySelectorAll("input.input--clientId")).forEach(input => {
+          input.value = this.clientId;
+        });
+      }).catch((err) => {
+        // TODO: error handling
+        debugger;
+      });
+    },
+
     loadJson(){
       let me = this;
       try{
@@ -142,7 +184,7 @@ export default {
         me.loading=true;
         ProcessSpec(jsonObj).then(function( spec ){
           me.loading=false;
-          me.specUrl="https://api.apis.guru/v2/specs/bitbucket.org/2.0/swagger.json";
+          me.specUrl="http://localhost/swagger/specs/product_v2.json";
           me.showLoadJsonPanel=false;
           me.afterSpecParsedAndValidated(spec);
         })

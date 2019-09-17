@@ -28,22 +28,64 @@ export default new Vuex.Store({
     oAuthClientSecret:"",
     oAuthTokenUrl:"",
 
+    clientId: ""
   },
 
   mutations: {
-    lang(state, payload)     { state.lang = payload; },
-    specUrl(state, payload)  { state.specUrl = payload; },
-    isDevMode(state, payload){ state.isDevMode = payload; },
-    reqToken(state, payload)       { state.reqToken = payload; },
-    reqTokenType(state, payload)   { state.reqTokenType = payload;  },
-    reqHeader(state, payload)      { state.reqHeader = payload;  },
-    reqSendTokenIn(state, payload) { state.reqSendTokenIn = payload; },
-    oAuthClientId(state, payload)     { state.oAuthClientId = payload; },
-    oAuthClientSecret(state, payload) { state.oAuthClientSecret = payload; },
-    oAuthTokenUrl(state, payload)     { state.oAuthTokenUrl = payload; },
-    selectedApiServer(state, payload) { state.selectedApiServer = payload; }
+    lang(state, payload) { 
+      state.lang = payload; 
+    },
+    specUrl(state, payload) { 
+      state.specUrl = payload; 
+    },
+    isDevMode(state, payload) { 
+      state.isDevMode = payload; 
+    },
+    reqToken(state, payload) { 
+      state.reqToken = payload; 
+    },
+    reqTokenType(state, payload) { 
+      state.reqTokenType = payload;  
+    },
+    reqHeader(state, payload) { 
+      state.reqHeader = payload;  
+    },
+    reqSendTokenIn(state, payload) { 
+      state.reqSendTokenIn = payload; 
+    },
+    oAuthClientId(state, payload) { 
+      state.oAuthClientId = payload; 
+    },
+    oAuthClientSecret(state, payload) { 
+      state.oAuthClientSecret = payload; 
+    },
+    oAuthTokenUrl(state, payload) { 
+      state.oAuthTokenUrl = payload; 
+    },
+    selectedApiServer(state, payload) { 
+      state.selectedApiServer = payload; 
+    },
+    setClientId(state, clientId) {
+      state.clientId = clientId;
+      state.selectedApiServer = state.selectedApiServer.replace(/{clientId}/gi, clientId);
+    },
+    /**
+     * This is a duplication of "reqToken" mutation. But this is made to be used only when 
+     * setting a THRON tokenId instead of a generic api-key.
+     * @param {*} state 
+     * @param {String} tokenId 
+     */
+    setTokenId(state, tokenId) {
+      state.reqToken = tokenId;
+    }
 
   },
-  plugins: [new VuexPersistence().plugin]
+
+  getters: {
+    tokenId(state) {
+      return state.reqToken;
+    }
+  }
+  // plugins: [new VuexPersistence().plugin]
   
 })

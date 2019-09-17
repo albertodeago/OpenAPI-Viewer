@@ -101,13 +101,34 @@
       }
     },
 
+    computed: {
+      /**
+       * TokenId from the store. It may be set when the user logs in
+       */
+      tokenId() {
+        return this.$store.getters.tokenId;
+      }
+    },
+
+    watch: {
+      /**
+       * If the tokneId in the store changes it means we have a new valid Token so 
+       * we need to change this.apiToken accordingly and set the auth status.
+       */
+      tokenId(newVal) {
+        this.apiToken = newVal;
+        this.authStatusData = "(API Key Active)";
+      }
+    },
+
     methods:{
       onActivateSecurityScheme(scheme){
         if (scheme.type.toLowerCase()==='apikey' && scheme.in==='header'){
             if (this.$data.apiToken) {
               store.commit("reqTokenType", scheme.type.toLowerCase());
               store.commit("reqSendTokenIn", scheme.name);
-              store.commit("reqToken", this.$data.apiToken);
+              // store.commit("reqToken", this.$data.apiToken);
+              store.commit("setTokenId", result.tokenId);
               this.authStatusData = "(API Key Active)";
             }
         }

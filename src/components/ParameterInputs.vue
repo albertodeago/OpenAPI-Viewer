@@ -38,7 +38,7 @@
         </template> 
         
         <!-- For all other types, show a textbox-->  
-        <input v-else type="text" class="sw-medium" style="width:100%" v-model="param.example">
+        <input v-else type="text" :class="'sw-medium input--' + param.name" style="width:100%" v-model="param.example">
       </td>  
 
       <!-- Field Desciption Column-->  
