@@ -1,19 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VuexPersistence from 'vuex-persist'
+// import VuexPersistence from 'vuex-persist'
 
 Vue.use(Vuex)
 
-const persistMutations=['lang','specUrl','reqToken', 'reqTokenType','reqHeader','reqSendTokenIn','oAuthTokenUrl']; // only these mutations will be persisted
-const vuexLocal = new VuexPersistence({
-  key:'mrindoc',
-  storage: window.localStorage,
-  filter: function(mutation){
-    return persistMutations.indexOf(mutation.type)>=0 ? true:false;
-  }
-})
-
-
+// const persistMutations=['lang','specUrl','reqToken', 'reqTokenType','reqHeader','reqSendTokenIn','oAuthTokenUrl']; // only these mutations will be persisted
+// const vuexLocal = new VuexPersistence({
+//   key:'mrindoc',
+//   storage: window.localStorage,
+//   filter: function(mutation){
+//     return persistMutations.indexOf(mutation.type)>=0 ? true:false;
+//   }
+// })
 
 
 export default new Vuex.Store({
