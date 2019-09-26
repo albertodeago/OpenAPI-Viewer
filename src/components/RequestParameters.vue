@@ -64,7 +64,7 @@
           <json-tree 
             path="/" 
             :data="mimeRequestTypes[selectedMimeReqKey].schemaTree"
-            display-format="text"
+            display-format="json"
           >
           </json-tree>
         </el-tab-pane>
